@@ -217,6 +217,12 @@
     "prefer-const": "error",
     "prefer-object-spread": "error",
     "prefer-template": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "quote-props": ["error", "as-needed"],
     "radix": "error",
     "space-before-function-paren": [

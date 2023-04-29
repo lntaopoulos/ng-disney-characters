@@ -1,0 +1,41 @@
+<!-- Search Input -->
+<mat-form-field class="w-1/4 pt-2 pb-3">
+  <mat-label>Type a character name</mat-label>
+  <input matInput class="search-input" placeholder="Ex: Mickey" #input />
+</mat-form-field>
+<!-- /Search Input -->
+
+<!-- Characters table -->
+<div class="max-h-96 overflow-auto mat-elevation-z2">
+  <table class="relative w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="text-violet-500 px-6 py-3">Name</th>
+        <th scope="col" class="text-violet-500 px-6 py-3">TV show appearances</th>
+        <th scope="col" class="text-violet-500 px-6 py-3">Video game appearances</th>
+        <th scope="col" class="text-violet-500 px-6 py-3">Allies</th>
+        <th scope="col" class="text-violet-500 px-6 py-3">Enemies</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let character of characters; let isLast = last"
+        class="hover:bg-violet-50 cursor-pointer"
+        [ngClass]="{ 'bg-white border-b dark:bg-gray-900 dark:border-gray-700': !isLast }"
+      >
+        <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
+          <span>{{ character.name }}</span>
+        </th>
+        <td class="px-6 py-4">{{ character.tvShows.length }}</td>
+        <td class="px-6 py-4">{{ character.videoGames.length }}</td>
+        <td class="px-6 py-4">{{ character.allies.join(', ') }}</td>
+        <td class="px-6 py-4">{{ character.enemies.join(', ') }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- /Characters table -->
+
+<!-- Paginator -->
+<mat-paginator class="paginator" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+<!-- /Paginator -->

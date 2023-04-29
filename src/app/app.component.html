@@ -1,1 +1,26 @@
-WIP
+<mat-drawer-container class="drawer-container" autosize>
+  <!-- Sidebar -->
+  <!-- TODO: opened -->
+  <mat-drawer #drawer class="sidenav" mode="side">
+    <mat-nav-list>
+      <a class="item w-4/5" mat-list-item routerLink="/dashboard"> Home </a>
+      <a class="item item-with-icon" mat-list-item routerLink="/characters">Characters</a>
+    </mat-nav-list>
+  </mat-drawer>
+  <!-- /Sidebar -->
+
+  <!-- Top menu -->
+  <mat-toolbar color="primary" class="toolbar mat-elevation-z6">
+    <div class="flex items-center">
+      <button mat-icon-button matRipple type="button" class="flex items-center pr-2" (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Disney characters</span>
+    </div>
+  </mat-toolbar>
+  <!-- /Top menu -->
+
+  <div class="main-content py-4 px-8">
+    <router-outlet></router-outlet>
+  </div>
+</mat-drawer-container>
