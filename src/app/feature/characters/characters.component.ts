@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core'
-import { CharacterResource } from './character.resource'
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core'
+import { FormControl } from '@angular/forms'
+import { PageEvent } from '@angular/material/paginator'
+import { select, Store } from '@ngrx/store'
+import { debounceTime, Observable, Subject, takeUntil } from 'rxjs'
+import { DEFAULT_PAGE_SIZE } from 'src/app/shared/utilities/resource-utilities'
+import { AppStateModel } from './../app-state.model'
+import { GetCharacterActionPropsModel } from './models/character-state.model'
+import { CharacterModel } from './models/character.model'
+import * as CharacterActions from './store/character.actions'
+import { characterList, isLoaderVisible, totalItems } from './store/character.selectors'
+
+const INPUT_DEBOUNCE_TIME = 600
 
 @Component({
   selector: 'characters-component',
@@ -7,15 +18,53 @@ import { CharacterResource } from './character.resource'
   templateUrl: './characters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CharactersComponent {
-  characters: any
+export class CharactersComponent implements OnInit, OnDestroy {
+  characters$: Observable<CharacterModel[]>
+  isLoaderVisible$: Observable<boolean>
+  totalItems$: Observable<number | null | undefined>
 
-  constructor(private characterResource: CharacterResource, private changeDetectorRef: ChangeDetectorRef) {}
+  searchTerm = new FormControl('')
+  page = 1
+  pageSize = DEFAULT_PAGE_SIZE
+  pageSizeOptions = [10, 20, 50, 100, 200, 500]
+
+  private destroy$ = new Subject<void>()
+
+  constructor(private store: Store<AppStateModel>) {
+    this.isLoaderVisible$ = this.store.pipe(select(isLoaderVisible))
+    this.characters$ = this.store.pipe(select(characterList))
+    this.totalItems$ = this.store.pipe(select(totalItems))
+  }
 
   ngOnInit(): void {
-    this.characterResource.getCharacters().subscribe((value) => {
-      this.characters = value.data
-      this.changeDetectorRef.detectChanges()
+    this.getCharacters({ page: this.page, pageSize: this.pageSize })
+    this.handleSearchTermChanges()
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
+  }
+
+  itemTrackBy(index: number, item: CharacterModel): number {
+    return item._id || index
+  }
+
+  handlePaginationChanges(pageEvent: PageEvent) {
+    const { pageIndex, pageSize } = pageEvent
+    this.page = pageIndex ? pageIndex + 1 : 1
+    this.pageSize = pageSize
+
+    this.getCharacters({ searchTerm: this.searchTerm.value, page: this.page, pageSize: this.pageSize })
+  }
+
+  private getCharacters({ searchTerm, page, pageSize }: GetCharacterActionPropsModel) {
+    this.store.dispatch(CharacterActions.getCharacters({ searchTerm, page, pageSize }))
+  }
+
+  private handleSearchTermChanges() {
+    this.searchTerm.valueChanges.pipe(debounceTime(INPUT_DEBOUNCE_TIME), takeUntil(this.destroy$)).subscribe((value) => {
+      this.getCharacters({ searchTerm: value, page: this.page, pageSize: this.pageSize })
     })
   }
 }

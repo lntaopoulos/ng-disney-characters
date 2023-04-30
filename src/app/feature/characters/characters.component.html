@@ -1,25 +1,29 @@
 <!-- Search Input -->
 <mat-form-field class="w-1/4 pt-2 pb-3">
   <mat-label>Type a character name</mat-label>
-  <input matInput class="search-input" placeholder="Ex: Mickey" #input />
+  <input matInput class="search-input" placeholder="Ex: Mickey" [formControl]="searchTerm" />
 </mat-form-field>
 <!-- /Search Input -->
 
 <!-- Characters table -->
-<div class="max-h-96 overflow-auto mat-elevation-z2">
+<div *ngIf="isLoaderVisible$ | async" class="h-96 max-h-96 flex items-center justify-center bg-gray-500 bg-opacity-5 mat-elevation-z2a">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!(isLoaderVisible$ | async)" class="h-96 max-h-96 overflow-auto mat-elevation-z2">
   <table class="relative w-full text-sm text-left text-gray-500 dark:text-gray-400">
     <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
-        <th scope="col" class="text-violet-500 px-6 py-3">Name</th>
-        <th scope="col" class="text-violet-500 px-6 py-3">TV show appearances</th>
-        <th scope="col" class="text-violet-500 px-6 py-3">Video game appearances</th>
-        <th scope="col" class="text-violet-500 px-6 py-3">Allies</th>
-        <th scope="col" class="text-violet-500 px-6 py-3">Enemies</th>
+        <th class="text-violet-500 px-6 py-3">Name</th>
+        <th class="text-violet-500 px-6 py-3">TV show appearances</th>
+        <th class="text-violet-500 px-6 py-3">Video game appearances</th>
+        <th class="text-violet-500 px-6 py-3">Allies</th>
+        <th class="text-violet-500 px-6 py-3">Enemies</th>
       </tr>
     </thead>
     <tbody>
       <tr
-        *ngFor="let character of characters; let isLast = last"
+        *ngFor="let character of characters$ | async; let isLast = last; trackBy: itemTrackBy"
         class="hover:bg-violet-50 cursor-pointer"
         [ngClass]="{ 'bg-white border-b dark:bg-gray-900 dark:border-gray-700': !isLast }"
       >
@@ -28,6 +32,8 @@
         </th>
         <td class="px-6 py-4">{{ character.tvShows.length }}</td>
         <td class="px-6 py-4">{{ character.videoGames.length }}</td>
+
+        <!-- TODO: text ellipsis & width and maybe pipe-->
         <td class="px-6 py-4">{{ character.allies.join(', ') }}</td>
         <td class="px-6 py-4">{{ character.enemies.join(', ') }}</td>
       </tr>
@@ -37,5 +43,11 @@
 <!-- /Characters table -->
 
 <!-- Paginator -->
-<mat-paginator class="paginator" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+<mat-paginator
+  class="paginator"
+  [length]="totalItems$ | async"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="handlePaginationChanges($event)"
+></mat-paginator>
 <!-- /Paginator -->
