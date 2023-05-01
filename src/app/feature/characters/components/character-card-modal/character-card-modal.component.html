@@ -1,0 +1,32 @@
+<div *ngIf="isVisible" class="modal-backdrop" (click)="handleBackdropClick($event)">
+  <mat-card class="character-card">
+    <mat-card-header class="card-header-wrapper">
+      <mat-card-title class="mb-2 text-violet-500">{{ character?.name }}</mat-card-title>
+
+      <button mat-icon-button matRipple (click)="isVisible = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+    <img class="card-image" mat-card-image [src]="character?.imageUrl" />
+    <mat-card-content class="card-content">
+      <div class="mb-4">
+        <h3 class="section-header">TV Shows:</h3>
+        <div class="chips-wrapper" *ngIf="character?.tvShows?.length">
+          <span *ngFor="let show of character?.tvShows" class="inline-block m-1 px-3 py-2 rounded-full bg-gray-200 font-medium">
+            {{ show }}
+          </span>
+        </div>
+        <span *ngIf="!character?.tvShows?.length">-</span>
+      </div>
+      <div class="mb-2">
+        <h3 class="section-header">Video games:</h3>
+        <div class="chips-wrapper" *ngIf="character?.videoGames?.length">
+          <span *ngFor="let show of character?.videoGames" class="inline-block m-1 px-3 py-2 rounded-full bg-gray-200 font-medium">
+            {{ show }}
+          </span>
+        </div>
+        <span *ngIf="!character?.videoGames?.length">-</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

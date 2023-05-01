@@ -5,11 +5,15 @@
 </mat-form-field>
 <!-- /Search Input -->
 
-<!-- Characters table -->
+<!-- Characters results -->
+
+<!-- Spinner -->
 <div *ngIf="isLoaderVisible$ | async" class="h-96 max-h-96 flex items-center justify-center bg-gray-500 bg-opacity-5 mat-elevation-z2a">
   <mat-spinner></mat-spinner>
 </div>
+<!-- /Spinner -->
 
+<!-- Table -->
 <div *ngIf="!(isLoaderVisible$ | async)" class="h-96 max-h-96 overflow-auto mat-elevation-z2">
   <table class="relative w-full text-sm text-left text-gray-500 dark:text-gray-400">
     <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -26,6 +30,7 @@
         *ngFor="let character of characters$ | async; let isLast = last; trackBy: itemTrackBy"
         class="hover:bg-violet-50 cursor-pointer"
         [ngClass]="{ 'bg-white border-b dark:bg-gray-900 dark:border-gray-700': !isLast }"
+        (click)="openCharacterModal(character._id)"
       >
         <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
           <span>{{ character.name }}</span>
@@ -40,7 +45,7 @@
     </tbody>
   </table>
 </div>
-<!-- /Characters table -->
+<!-- /Table -->
 
 <!-- Paginator -->
 <mat-paginator
@@ -51,3 +56,7 @@
   (page)="handlePaginationChanges($event)"
 ></mat-paginator>
 <!-- /Paginator -->
+
+<!-- Card Modal -->
+<app-character-card-modal [(isVisible)]="isCharacterModalVisible" [character]="activeCharacter$ | async"></app-character-card-modal>
+<!-- /Card Modal -->

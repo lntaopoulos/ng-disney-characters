@@ -8,7 +8,7 @@ import { AppStateModel } from './../app-state.model'
 import { GetCharacterActionPropsModel } from './models/character-state.model'
 import { CharacterModel } from './models/character.model'
 import * as CharacterActions from './store/character.actions'
-import { characterList, isLoaderVisible, totalItems } from './store/character.selectors'
+import { characterList, getCharacterById, isLoaderVisible, totalItems } from './store/character.selectors'
 
 const INPUT_DEBOUNCE_TIME = 600
 
@@ -20,6 +20,7 @@ const INPUT_DEBOUNCE_TIME = 600
 })
 export class CharactersComponent implements OnInit, OnDestroy {
   characters$: Observable<CharacterModel[]>
+  activeCharacter$!: Observable<CharacterModel>
   isLoaderVisible$: Observable<boolean>
   totalItems$: Observable<number | null | undefined>
 
@@ -27,6 +28,7 @@ export class CharactersComponent implements OnInit, OnDestroy {
   page = 1
   pageSize = DEFAULT_PAGE_SIZE
   pageSizeOptions = [10, 20, 50, 100, 200, 500]
+  isCharacterModalVisible!: boolean
 
   private destroy$ = new Subject<void>()
 
@@ -56,6 +58,11 @@ export class CharactersComponent implements OnInit, OnDestroy {
     this.pageSize = pageSize
 
     this.getCharacters({ searchTerm: this.searchTerm.value, page: this.page, pageSize: this.pageSize })
+  }
+
+  openCharacterModal(id: number) {
+    this.activeCharacter$ = this.store.pipe(select(getCharacterById(id))) as Observable<CharacterModel>
+    this.isCharacterModalVisible = true
   }
 
   private getCharacters({ searchTerm, page, pageSize }: GetCharacterActionPropsModel) {
