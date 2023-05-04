@@ -1,8 +1,9 @@
 import { CharacterModel } from './character.model'
+import { ResultStatusEnum } from './results-status.enum'
 import { SortingOptionsModel } from './sorting-options.model'
 
 export interface CharacterStateModel {
-  isLoaderVisible: boolean
+  resultStatus: ResultStatusEnum | null
   list: CharacterModel[]
   totalItems?: number | null
   isTvShowFilterEnabled: boolean

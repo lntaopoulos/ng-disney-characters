@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
 import { PageEvent } from '@angular/material/paginator'
+import { ResultStatusEnum } from '../../models/results-status.enum'
 import { SortingOptionsModel, SortType } from '../../models/sorting-options.model'
 import { CharacterModel } from './../../models/character.model'
 
@@ -14,6 +15,7 @@ export class CharacterResultsComponent {
   @Input() characters!: CharacterModel[] | null
   @Input() isLoaderVisible!: boolean | null
   @Input() totalItems!: number | null | undefined
+  @Input() resultStatus!: ResultStatusEnum | null
   @Input() pageSize!: number
   @Input() pageIndex!: number
   @Input() pageSizeOptions!: number[]
@@ -23,6 +25,8 @@ export class CharacterResultsComponent {
   @Output() paginationChanged = new EventEmitter<PageEvent>()
 
   sortingTypeToApply: SortType
+
+  readonly resultStatusEnum = ResultStatusEnum
 
   itemTrackBy(index: number, item: CharacterModel): number {
     return item._id || index

@@ -3,7 +3,7 @@
     <!-- Search Input -->
     <mat-form-field class="w-96">
       <mat-label>Type a character name</mat-label>
-      <input matInput class="search-input" placeholder="Ex: Mickey" formControlName="searchTerm" />
+      <input matInput class="search-input" placeholder="Ex: Abigail" formControlName="searchTerm" />
       <button *ngIf="searchTermControl.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchTermControl.reset()">
         <mat-icon>close</mat-icon>
       </button>
@@ -28,7 +28,7 @@
       <app-character-results
         [characters]="characters$ | async"
         [sortType]="sortType$ | async"
-        [isLoaderVisible]="isLoaderVisible$ | async"
+        [resultStatus]="resultStatus$ | async"
         [totalItems]="totalItems$ | async"
         [pageSize]="pageSize"
         [pageIndex]="pageIndex"
@@ -42,11 +42,17 @@
 
     <!-- Pie chart -->
     <div [hidden]="!isPieChartVisibleControl.value" class="w-1/3 max-h-96 relative ml-6">
-      <div *ngIf="isLoaderVisible$ | async" class="h-full flex items-center justify-center bg-gray-500 bg-opacity-5">
+      <div
+        *ngIf="(resultStatus$ | async) === resultStatusEnum.LOADING"
+        class="h-full flex items-center justify-center bg-gray-500 bg-opacity-5"
+      >
         <mat-spinner></mat-spinner>
       </div>
 
-      <app-character-pie-chart [hidden]="isLoaderVisible$ | async" [chartData]="chartData$ | async"></app-character-pie-chart>
+      <app-character-pie-chart
+        [hidden]="(resultStatus$ | async) === resultStatusEnum.LOADING || (resultStatus$ | async) === resultStatusEnum.NO_RESULTS_FOUND"
+        [chartData]="chartData$ | async"
+      ></app-character-pie-chart>
     </div>
     <!-- /Pie chart -->
   </div>

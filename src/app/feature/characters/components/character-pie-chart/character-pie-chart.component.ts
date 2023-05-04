@@ -33,7 +33,7 @@ export class CharacterPieChartComponent {
       style: { color: '#673ab7', fill: '#673ab7' },
     },
     tooltip: {
-      pointFormat: '<b>{series.name}:</b> <b>{point.y}</b> ({point.percentage:.1f}%)<br> Films: {point.films}',
+      pointFormat: '<b>{series.name}:</b> {point.y} ({point.percentage:.1f}%)<br> <b>Films:</b> {point.films}',
     },
     plotOptions: {
       pie: {

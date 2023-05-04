@@ -6,9 +6,10 @@ import { debounceTime, map, Observable, Subject, takeUntil, tap } from 'rxjs'
 import { AppStateModel } from './../app-state.model'
 import { GetCharacterActionPropsModel } from './models/character-state.model'
 import { CharacterModel } from './models/character.model'
+import { ResultStatusEnum } from './models/results-status.enum'
 import { SortingOptionsModel, SortType } from './models/sorting-options.model'
 import * as CharacterActions from './store/character.actions'
-import { characterList, getCharacterById, isLoaderVisible, sortType, totalItems } from './store/character.selectors'
+import { characterList, getCharacterById, resultStatus, sortType, totalItems } from './store/character.selectors'
 
 const INPUT_DEBOUNCE_TIME = 600
 const DEFAULT_PAGE_SIZE = 50
@@ -23,7 +24,7 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, 200, 500]
 export class CharactersComponent implements OnInit, OnDestroy {
   characters$: Observable<CharacterModel[]>
   activeCharacter$!: Observable<CharacterModel>
-  isLoaderVisible$: Observable<boolean>
+  resultStatus$: Observable<ResultStatusEnum | null>
   totalItems$: Observable<number | null | undefined>
   sortType$: Observable<SortType | null | undefined>
   chartData$: Observable<{ name: string; y: number; films: string }[] | null>
@@ -34,6 +35,8 @@ export class CharactersComponent implements OnInit, OnDestroy {
   pageSizeOptions = PAGE_SIZE_OPTIONS
   isCharacterModalVisible!: boolean
   form = this.fb.group({ searchTerm: [''], tvShowFilter: [false], isPieChartVisible: [true] })
+
+  readonly resultStatusEnum = ResultStatusEnum
 
   get searchTermControl(): FormControl {
     return this.form?.get('searchTerm') as FormControl
@@ -50,7 +53,7 @@ export class CharactersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>()
 
   constructor(private store: Store<AppStateModel>, private fb: FormBuilder) {
-    this.isLoaderVisible$ = this.store.pipe(select(isLoaderVisible))
+    this.resultStatus$ = this.store.pipe(select(resultStatus))
     this.characters$ = this.store.pipe(select(characterList))
     this.totalItems$ = this.store.pipe(select(totalItems))
     this.sortType$ = this.store.pipe(select(sortType))

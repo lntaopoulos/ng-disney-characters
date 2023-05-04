@@ -1,12 +1,13 @@
 import { createReducer, on } from '@ngrx/store'
 import { CharacterStateModel } from '../models/character-state.model'
 import { CharacterModel } from '../models/character.model'
+import { ResultStatusEnum } from '../models/results-status.enum'
 import { SortingOptionsModel } from './../models/sorting-options.model'
 import * as CharacterActions from './character.actions'
 
 export const initialState: CharacterStateModel = {
   list: [],
-  isLoaderVisible: false,
+  resultStatus: null,
   isTvShowFilterEnabled: false,
   sortingOptions: null,
   totalItems: null,
@@ -14,10 +15,10 @@ export const initialState: CharacterStateModel = {
 
 export const reducers = createReducer(
   initialState,
-  on(CharacterActions.getCharacters, (state) => ({ ...state, isLoaderVisible: true })),
+  on(CharacterActions.getCharacters, (state) => ({ ...state, resultStatus: ResultStatusEnum.LOADING })),
   on(CharacterActions.getCharactersSuccess, (state, action) => ({
     ...state,
-    isLoaderVisible: false,
+    resultStatus: action.list.length ? ResultStatusEnum.SHOW_RESULTS : ResultStatusEnum.NO_RESULTS_FOUND,
     list: getSortedAndFilteredList(action.list, state.isTvShowFilterEnabled, state.sortingOptions),
     totalItems: action.totalItems,
   })),

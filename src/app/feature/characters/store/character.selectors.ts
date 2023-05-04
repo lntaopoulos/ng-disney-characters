@@ -4,7 +4,7 @@ import { CharacterModel } from '../models/character.model'
 
 export const selectFeature = (state: AppStateModel) => state.characters
 
-export const isLoaderVisible = createSelector(selectFeature, (state) => state.isLoaderVisible)
+export const resultStatus = createSelector(selectFeature, (state) => state.resultStatus)
 export const totalItems = createSelector(selectFeature, (state) => state.totalItems)
 export const sortType = createSelector(selectFeature, (state) => state.sortingOptions?.sortType)
 export const characterList = createSelector(selectFeature, (state) => state.list)
