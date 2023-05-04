@@ -1,7 +1,47 @@
+$top-bar-actions-height: 90px;
+$form-field-font-size: 16px;
+$paginator-height: 60px;
+
+.top-bar-actions {
+  height: $top-bar-actions-height;
+  display: flex;
+  align-items: center;
+}
+
 .mat-form-field {
-  font-size: 16px;
+  font-size: $form-field-font-size;
+}
+
+.data-wrapper {
+  $rest-content: $top-bar-actions-height + $paginator-height;
+  height: calc(100% - #{$rest-content});
+  position: relative;
+
+  .table-header {
+    @apply text-violet-500;
+    @apply px-6;
+    @apply py-3;
+  }
+}
+
+.sortable-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .placeholder-sort-icon {
+    opacity: 0;
+    color: gray;
+  }
+
+  &:hover {
+    .placeholder-sort-icon {
+      opacity: 0.4;
+    }
+  }
 }
 
 .paginator {
   background-color: transparent;
+  height: $paginator-height;
 }

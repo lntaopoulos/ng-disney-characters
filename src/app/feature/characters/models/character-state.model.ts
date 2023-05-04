@@ -1,4 +1,5 @@
 import { CharacterModel } from './character.model'
+import { SortingOptionsModel } from './sorting-options.model'
 
 export interface CharacterStateModel {
   isLoaderVisible: boolean
@@ -6,8 +7,9 @@ export interface CharacterStateModel {
   activeCharacter?: CharacterModel | null
   totalItems?: number
   searchTerm?: string | null
-  currentPage?: number | null
   pageSize?: number | null
+  isTvShowFilterEnabled: boolean
+  sortingOptions: SortingOptionsModel | null
 }
 
 export interface GetCharacterActionPropsModel {
