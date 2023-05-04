@@ -12,76 +12,33 @@
 
     <!-- Radio button filters -->
     <mat-radio-group class="ml-8 mr-5" formControlName="tvShowFilter">
-      <mat-radio-button class="pr-4" color="primary" [value]="false">Show all</mat-radio-button>
-      <mat-radio-button color="primary" [value]="true">Show TV show characters</mat-radio-button>
+      <mat-radio-button class="pr-4" color="primary" [value]="false">All</mat-radio-button>
+      <mat-radio-button color="primary" [value]="true">TV show characters</mat-radio-button>
     </mat-radio-group>
     <!-- /Radio button filters -->
 
     <!-- Pie chart toggle -->
-    <mat-slide-toggle class="ml-auto" color="primary" formControlName="isPieChartVisible">Pie chart</mat-slide-toggle>
+    <mat-slide-toggle class="ml-auto" color="primary" formControlName="isPieChartVisible">Film chart</mat-slide-toggle>
     <!-- /Pie chart toggle -->
   </div>
-  <!-- Characters results -->
+
   <div class="data-wrapper h-full flex">
+    <!-- Character results -->
     <div [ngClass]="isPieChartVisibleControl.value ? 'w-2/3' : 'w-full'">
-      <div class="relative h-full overflow-auto mat-elevation-z2">
-        <!-- Spinner -->
-        <div *ngIf="isLoaderVisible$ | async" class="h-full flex items-center justify-center bg-gray-500 bg-opacity-5 mat-elevation-z2a">
-          <mat-spinner></mat-spinner>
-        </div>
-        <!-- /Spinner -->
-
-        <!-- Table -->
-        <table *ngIf="!(isLoaderVisible$ | async)" class="relative w-full text-sm text-left text-gray-500">
-          <thead class="sticky top-0 text-xs text-gray-700 uppercase border-b bg-gray-50">
-            <tr>
-              <th class="table-header">
-                <div class="sortable-header" (click)="applySorting('name', sortingTypeToApply)">
-                  Name
-                  <mat-icon *ngIf="!(sortType$ | async)" class="placeholder-sort-icon text-base pl-1">arrow_upward</mat-icon>
-                  <mat-icon *ngIf="(sortType$ | async) === 'asc'" class="text-base pl-1">arrow_upward</mat-icon>
-                  <mat-icon *ngIf="(sortType$ | async) === 'desc'" class="text-base pl-1">arrow_downward</mat-icon>
-                </div>
-              </th>
-              <th class="table-header">TV show appearances</th>
-              <th class="table-header">Video game appearances</th>
-              <th class="table-header">Allies</th>
-              <th class="table-header">Enemies</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              *ngFor="let character of characters$ | async; let isLast = last; trackBy: itemTrackBy"
-              class="hover:bg-violet-50 cursor-pointer"
-              [ngClass]="{ 'bg-white border-b dark:bg-gray-900 dark:border-gray-700': !isLast }"
-              (click)="openCharacterModal(character._id)"
-            >
-              <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
-                <span>{{ character.name }}</span>
-              </th>
-              <td class="px-6 py-4">{{ character.tvShows.length }}</td>
-              <td class="px-6 py-4">{{ character.videoGames.length }}</td>
-
-              <!-- TODO: text ellipsis & width and maybe pipe-->
-              <td class="px-6 py-4">{{ character.allies.join(', ') }}</td>
-              <td class="px-6 py-4">{{ character.enemies.join(', ') }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- /Table -->
-
-      <!-- Paginator -->
-      <mat-paginator
-        #paginator
-        class="paginator"
-        [length]="totalItems$ | async"
+      <app-character-results
+        [characters]="characters$ | async"
+        [sortType]="sortType$ | async"
+        [isLoaderVisible]="isLoaderVisible$ | async"
+        [totalItems]="totalItems$ | async"
         [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
         [pageSizeOptions]="pageSizeOptions"
-        (page)="handlePaginationChanges($event)"
-      ></mat-paginator>
-      <!-- /Paginator -->
+        (characterClicked)="openCharacterModal($event)"
+        (sortColumnClicked)="applySorting($event)"
+        (paginationChanged)="handlePaginationChanges($event)"
+      ></app-character-results>
     </div>
+    <!-- /Character results -->
 
     <!-- Pie chart -->
     <div [hidden]="!isPieChartVisibleControl.value" class="w-1/3 max-h-96 relative ml-6">

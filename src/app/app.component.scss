@@ -16,4 +16,8 @@ $sidenav-width: 220px;
 
 .sidenav {
   width: $sidenav-width;
+
+  .is-active {
+    @apply text-violet-500;
+  }
 }

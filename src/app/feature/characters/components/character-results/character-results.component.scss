@@ -1,0 +1,42 @@
+$list-data-text-width: 180px;
+$paginator-height: 60px;
+
+.scrollable-wrapper {
+  height: calc(100% - #{$paginator-height});
+}
+
+.table-header {
+  @apply text-violet-500;
+  @apply px-6;
+  @apply py-3;
+}
+
+.sortable-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .placeholder-sort-icon {
+    opacity: 0;
+    color: gray;
+  }
+
+  &:hover {
+    .placeholder-sort-icon {
+      opacity: 0.4;
+    }
+  }
+}
+
+.list-text-ellipsis {
+  max-width: $list-data-text-width;
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paginator {
+  background-color: transparent;
+  height: $paginator-height;
+}

@@ -6,10 +6,10 @@ import * as CharacterActions from './character.actions'
 
 export const initialState: CharacterStateModel = {
   list: [],
-  activeCharacter: null,
   isLoaderVisible: false,
   isTvShowFilterEnabled: false,
   sortingOptions: null,
+  totalItems: null,
 }
 
 export const reducers = createReducer(
@@ -37,7 +37,11 @@ export const reducers = createReducer(
       sortingOptions,
       list: getSortedAndFilteredList(state.list, state.isTvShowFilterEnabled, sortingOptions),
     }
-  })
+  }),
+  on(CharacterActions.resetState, (state) => ({
+    ...state,
+    ...initialState,
+  }))
 )
 
 function getSortedAndFilteredList(

@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core'
 import { FormBuilder, FormControl } from '@angular/forms'
-import { MatPaginator, PageEvent } from '@angular/material/paginator'
+import { PageEvent } from '@angular/material/paginator'
 import { select, Store } from '@ngrx/store'
 import { debounceTime, map, Observable, Subject, takeUntil, tap } from 'rxjs'
-import { DEFAULT_PAGE_SIZE } from 'src/app/shared/utilities/resource-utilities'
 import { AppStateModel } from './../app-state.model'
 import { GetCharacterActionPropsModel } from './models/character-state.model'
 import { CharacterModel } from './models/character.model'
-import { SortType } from './models/sorting-options.model'
+import { SortingOptionsModel, SortType } from './models/sorting-options.model'
 import * as CharacterActions from './store/character.actions'
 import { characterList, getCharacterById, isLoaderVisible, sortType, totalItems } from './store/character.selectors'
 
 const INPUT_DEBOUNCE_TIME = 600
+const DEFAULT_PAGE_SIZE = 50
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 100, 200, 500]
 
 @Component({
   selector: 'characters-component',
@@ -20,8 +21,6 @@ const INPUT_DEBOUNCE_TIME = 600
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CharactersComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator) paginatorComponent!: MatPaginator
-
   characters$: Observable<CharacterModel[]>
   activeCharacter$!: Observable<CharacterModel>
   isLoaderVisible$: Observable<boolean>
@@ -30,10 +29,10 @@ export class CharactersComponent implements OnInit, OnDestroy {
   chartData$: Observable<{ name: string; y: number; films: string }[] | null>
 
   page = 1
+  pageIndex!: number
   pageSize = DEFAULT_PAGE_SIZE
-  pageSizeOptions = [10, 20, 50, 100, 200, 500]
+  pageSizeOptions = PAGE_SIZE_OPTIONS
   isCharacterModalVisible!: boolean
-  sortingTypeToApply: SortType
   form = this.fb.group({ searchTerm: [''], tvShowFilter: [false], isPieChartVisible: [true] })
 
   get searchTermControl(): FormControl {
@@ -68,6 +67,8 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.store.dispatch(CharacterActions.resetState())
+
     this.destroy$.next()
     this.destroy$.complete()
   }
@@ -89,10 +90,8 @@ export class CharactersComponent implements OnInit, OnDestroy {
     this.isCharacterModalVisible = true
   }
 
-  applySorting(columnName: string, type: SortType) {
-    this.sortingTypeToApply = type === 'asc' ? 'desc' : 'asc'
-
-    this.store.dispatch(CharacterActions.applySorting({ sortType: this.sortingTypeToApply, sortBy: columnName }))
+  applySorting(sortingOptions: SortingOptionsModel) {
+    this.store.dispatch(CharacterActions.applySorting(sortingOptions))
   }
 
   private getCharacters({ searchTerm, page, pageSize }: GetCharacterActionPropsModel) {
@@ -102,7 +101,7 @@ export class CharactersComponent implements OnInit, OnDestroy {
   private handleSearchTermChanges() {
     this.searchTermControl.valueChanges.pipe(debounceTime(INPUT_DEBOUNCE_TIME), takeUntil(this.destroy$)).subscribe((value) => {
       this.page = 1
-      this.paginatorComponent.firstPage()
+      this.pageIndex = this.page - 1
       this.getCharacters({ searchTerm: value, page: this.page, pageSize: this.pageSize })
     })
   }

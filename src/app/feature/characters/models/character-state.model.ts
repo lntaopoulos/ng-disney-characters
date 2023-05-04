@@ -4,10 +4,7 @@ import { SortingOptionsModel } from './sorting-options.model'
 export interface CharacterStateModel {
   isLoaderVisible: boolean
   list: CharacterModel[]
-  activeCharacter?: CharacterModel | null
-  totalItems?: number
-  searchTerm?: string | null
-  pageSize?: number | null
+  totalItems?: number | null
   isTvShowFilterEnabled: boolean
   sortingOptions: SortingOptionsModel | null
 }

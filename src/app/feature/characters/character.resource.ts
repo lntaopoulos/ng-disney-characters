@@ -19,6 +19,16 @@ export class CharacterResource {
     const url = `${this.baseUrl}/character`
     const queryParams = getQueryParams(params)
 
-    return this.http.get(url, { params: queryParams }).pipe(map((response) => response as CharacterAPIResponseModel))
+    return this.http.get(url, { params: queryParams }).pipe(
+      map((response) => response as CharacterAPIResponseModel),
+
+      /* This code below is added to simulate filtering from API - currently not working */
+      map((response) => ({
+        ...response,
+        data: !!params['name']
+          ? response.data.filter((item) => item.name.toLowerCase().startsWith(params['name'].toLowerCase()))
+          : response.data,
+      }))
+    )
   }
 }

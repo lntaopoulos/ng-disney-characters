@@ -6,3 +6,4 @@ export const getCharacters = createAction('[Characters] Get characters', props<G
 export const getCharactersSuccess = createAction('[Characters] Get characters success', props<GetCharacterSuccessActionPropsModel>())
 export const setTvShowFilterValue = createAction('[Characters] Set TV show filter value', props<{ isTvShowFilterEnabled: boolean }>())
 export const applySorting = createAction('[Characters] apply sorting', props<SortingOptionsModel>())
+export const resetState = createAction('[Characters] reset state')

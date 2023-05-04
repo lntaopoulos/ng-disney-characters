@@ -2,8 +2,8 @@
   <!-- Sidebar -->
   <mat-drawer #drawer class="sidenav" mode="side">
     <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard">Home </a>
-      <a mat-list-item routerLink="/characters">Browse Characters</a>
+      <a mat-list-item routerLink="/dashboard" [routerLinkActive]="['is-active']">Home</a>
+      <a mat-list-item routerLink="/characters" [routerLinkActive]="['is-active']">Browse Characters</a>
     </mat-nav-list>
   </mat-drawer>
   <!-- /Sidebar -->

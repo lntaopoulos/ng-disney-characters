@@ -12,6 +12,7 @@ import { MatRadioModule } from '@angular/material/radio'
 import { MatSelectModule } from '@angular/material/select'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatTableModule } from '@angular/material/table'
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { EffectsModule } from '@ngrx/effects'
 import { StoreModule } from '@ngrx/store'
 import { HighchartsChartModule } from 'highcharts-angular'
@@ -21,7 +22,8 @@ import { CharactersComponent } from './characters.component'
 import { CharacterCardModalComponent } from './components/character-card-modal/character-card-modal.component'
 import { CharacterPieChartComponent } from './components/character-pie-chart/character-pie-chart.component'
 import { CharacterEffects } from './store/character.effects'
-import { reducers } from './store/character.reducers'
+import { reducers } from './store/character.reducers';
+import { CharacterResultsComponent } from './components/character-results/character-results.component'
 
 const AngularMaterialModules = [
   MatPaginatorModule,
@@ -35,10 +37,11 @@ const AngularMaterialModules = [
   MatCardModule,
   MatSlideToggleModule,
   MatRadioModule,
+  MatTooltipModule,
 ]
 
 @NgModule({
-  declarations: [CharactersComponent, CharacterCardModalComponent, CharacterPieChartComponent],
+  declarations: [CharactersComponent, CharacterCardModalComponent, CharacterPieChartComponent, CharacterResultsComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

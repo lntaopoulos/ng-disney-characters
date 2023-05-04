@@ -1,0 +1,59 @@
+<div class="scrollable-wrapper relative h-full overflow-auto mat-elevation-z2">
+  <!-- Spinner -->
+  <div *ngIf="isLoaderVisible" class="h-full flex items-center justify-center bg-gray-500 bg-opacity-5 mat-elevation-z2a">
+    <mat-spinner></mat-spinner>
+  </div>
+  <!-- /Spinner -->
+
+  <!-- Characters table -->
+  <table *ngIf="!isLoaderVisible" class="relative w-full text-sm text-left text-gray-500">
+    <thead class="sticky top-0 text-xs text-gray-700 uppercase border-b bg-gray-50">
+      <tr>
+        <th class="table-header">
+          <div class="sortable-header" (click)="sortColumn('name', sortingTypeToApply)">
+            Name
+            <mat-icon *ngIf="!sortType" class="placeholder-sort-icon text-base pl-1">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortType === 'asc'" class="text-base pl-1">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortType === 'desc'" class="text-base pl-1">arrow_downward</mat-icon>
+          </div>
+        </th>
+        <th class="table-header">TV show appearances</th>
+        <th class="table-header">Video game appearances</th>
+        <th class="table-header">Allies</th>
+        <th class="table-header">Enemies</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let character of characters; let isLast = last; trackBy: itemTrackBy"
+        class="hover:bg-violet-50 cursor-pointer"
+        [ngClass]="{ 'bg-white border-b dark:bg-gray-900 dark:border-gray-700': !isLast }"
+        (click)="characterClicked.emit(character._id)"
+      >
+        <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
+          <span>{{ character.name }}</span>
+        </th>
+        <td class="px-6 py-4">{{ character.tvShows.length }}</td>
+        <td class="px-6 py-4">{{ character.videoGames.length }}</td>
+        <td class="px-6 py-4" matTooltip="{{ character.allies.join(', ') }}" matTooltipPosition="above">
+          <span class="list-text-ellipsis">{{ character.allies.join(', ') }}</span>
+        </td>
+        <td class="px-6 py-4" matTooltip="{{ character.enemies.join(', ') }}" matTooltipPosition="above">
+          <span class="list-text-ellipsis">{{ character.enemies.join(', ') }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Characters table -->
+</div>
+
+<!-- Paginator -->
+<mat-paginator
+  class="paginator"
+  [length]="totalItems"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="paginationChanged.emit($event)"
+></mat-paginator>
+<!-- /Paginator -->
